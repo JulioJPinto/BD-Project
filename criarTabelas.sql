@@ -8,7 +8,6 @@ CREATE TABLE Aluno (
     Escalao CHAR,
     Idade INT NOT NULL,
     DataDeNascimento DATE NOT NULL,
-    fk_Escola INT,
     fk_Curso INT,
     PRIMARY KEY (NrAluno, idEscola)
 );
@@ -73,7 +72,7 @@ CREATE TABLE DiretorEscola (
 );
  
 ALTER TABLE Aluno ADD CONSTRAINT FK_Aluno_Escola
-    FOREIGN KEY (fk_Escola)
+    FOREIGN KEY (idEscola)
     REFERENCES Escola (id)
     ON DELETE RESTRICT;
  
