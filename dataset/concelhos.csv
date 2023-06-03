@@ -1,0 +1,11 @@
+﻿Id;Nome;IdadeMediaPopulacao;RendimentoMedioAgregadoFamiliar;NumeroMedioFilhos,PresidenteId
+1;Lisboa;41;25000;1.5;1
+2;Porto;39;23000;1.4;2
+3;Vila Nova de Gaia;40;22000;1.3;3
+4;Santo Tirso;38;18000;1.2;4
+5;Braga;37;20000;1.6;5
+6;Matosinhos;42;21000;1.4;6
+7;Cascais;45;28000;1.3;7
+8;Coimbra;36;19000;1.2;8
+9;Sintra;43;23000;1.5;9
+10;Esposende;41;20000;1.4;10

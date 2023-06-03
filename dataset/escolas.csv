@@ -1,0 +1,11 @@
+﻿Id;Nome;Tipo;IdadeMediaProfessores;NumeroMedioAlunosPorTurma;ConcelhoId;DiretorId
+1;Escola Básica de São João;B;35;20;1;1
+2;Escola Secundária Manuel de Castro;S;40;25;1;2
+3;Escola Básica do Lago;B;30;22;2;4
+4;Escola Secundária da Liberdade;S;38;24;2;3
+5;Escola Básica de Santa Maria;B;32;21;3;7
+6;Escola Secundária João de Deus;S;42;26;3;6
+7;Escola Básica de São Pedro;B;33;19;4;5
+8;Escola Secundária dos Carvalhos;S;39;23;4;9
+9;Escola Básica de Santo António;B;36;20;5;8
+10;Escola Secundária da Boa Nova;S;41;25;5;10
