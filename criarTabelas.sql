@@ -24,7 +24,8 @@ CREATE TABLE Escola (
     Tipo CHAR NOT NULL,
     IdadeMediaProfessores FLOAT NOT NULL,
     NumeroMedioAlunosPorTurma FLOAT NOT NULL,
-    fk_Concelho INT
+    fk_Concelho INT,
+    fk_DiretorEscola INT
 );
 
 CREATE TABLE Concelho (
@@ -51,8 +52,9 @@ CREATE TABLE RealizacaoExame (
     NotaFinal FLOAT,
     NotaRevisada FLOAT,
     fk_Aluno INT,
+    fk_AlunoEscola INT,
     fk_ExameNacional INT,
-    fk_Escola INT
+    fk_EscolaRealizada INT
 );
 
 CREATE TABLE Disciplina (
@@ -67,8 +69,7 @@ CREATE TABLE PresidenteConcelho (
 
 CREATE TABLE DiretorEscola (
     id INT PRIMARY KEY,
-    Nome VARCHAR(255) NOT NULL,
-    fk_Escola INT
+    Nome VARCHAR(255) NOT NULL
 );
  
 ALTER TABLE Aluno ADD CONSTRAINT FK_Aluno_Escola
@@ -85,6 +86,11 @@ ALTER TABLE Escola ADD CONSTRAINT FK_Escola_Concelho
     FOREIGN KEY (fk_Concelho)
     REFERENCES Concelho (id)
     ON DELETE RESTRICT;
+
+ALTER TABLE Escola ADD CONSTRAINT FK_Escola_DiretorEscola
+    FOREIGN KEY (fk_DiretorEscola)
+    REFERENCES DiretorEscola (id)
+    ON DELETE RESTRICT;
  
 ALTER TABLE Concelho ADD CONSTRAINT FK_Concelho_PresidenteConcelho
     FOREIGN KEY (fk_PresidenteConcelho)
@@ -95,8 +101,8 @@ ALTER TABLE ExameNacional ADD CONSTRAINT FK_ExameNacional_Disciplina
     REFERENCES Disciplina (id)
     ON DELETE RESTRICT;
  
-ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_Escola
-    FOREIGN KEY (fk_Escola)
+ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_EscolaRealizada
+    FOREIGN KEY (fk_EscolaRealizada)
     REFERENCES Escola (id);
  
 ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_ExameNacional
@@ -104,9 +110,5 @@ ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_ExameNacional
     REFERENCES ExameNacional (id);
  
 ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_Aluno
-    FOREIGN KEY (fk_Aluno, fk_Escola)
-    REFERENCES Aluno (NrAluno, idEscola); # FIX fk_Escola != idEscola
- 
-ALTER TABLE DiretorEscola ADD CONSTRAINT FK_DiretorEscola_Escola
-    FOREIGN KEY (fk_Escola)
-    REFERENCES Escola (id);
+    FOREIGN KEY (fk_Aluno, fk_AlunoEscola)
+    REFERENCES Aluno (NrAluno, idEscola);
