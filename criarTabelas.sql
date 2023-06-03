@@ -15,7 +15,7 @@ CREATE TABLE Aluno (
 CREATE TABLE Curso (
     id INT PRIMARY KEY,
     Nome VARCHAR(255) NOT NULL,
-    Descricao VARCHAR(255) NOT NULL
+    Descricao TEXT
 );
 
 CREATE TABLE Escola (
