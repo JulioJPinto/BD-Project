@@ -57,7 +57,7 @@ def import_backup(connection_info_lazy, file_path):
 
     # Executar o comando
     subprocess.call(cmd, shell=True)
-    print(f'O backup "{file_path}" foi importado para a base de dados.')
+    print(f'Importado "{file_path}" para a base de dados.')
 
 
 if __name__ == '__main__':
