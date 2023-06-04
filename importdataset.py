@@ -1,7 +1,7 @@
 import csv
 import mysql.connector
 
-# Configurações da conexão com o banco de dados
+# Configurações da conexão com a base de dados
 config = {
     'user': 'root',
     'password': 'admin',
@@ -9,14 +9,14 @@ config = {
     'database': 'edudata'
 }
 
-# Função para estabelecer a conexão com o banco de dados
+# Função para estabelecer a conexão com a base de dados
 def conectar():
     try:
         conn = mysql.connector.connect(**config)
         print('Conexão estabelecida com sucesso!')
         return conn
     except mysql.connector.Error as err:
-        print(f'Erro ao conectar ao banco de dados: {err}')
+        print(f'Erro ao conectar à base de dados: {err}')
         return None
 
 # Função para inserir os dados do CSV na tabela
@@ -33,7 +33,7 @@ def inserir_dados(conn, tabela, dados, mapeamento_colunas):
     try:
         cursor.executemany(query, valores)
         conn.commit()
-        print(f'{len(dados)} registros inseridos com sucesso na tabela {tabela}.')
+        print(f'{len(dados)} registos inseridos com sucesso na tabela {tabela}.')
     except mysql.connector.Error as err:
         conn.rollback()
         print(f'Erro ao inserir dados na tabela {tabela}: {err}')
@@ -47,11 +47,12 @@ def ler_csv(nome_arquivo):
         leitor = csv.DictReader(arquivo, delimiter=';')
         for linha in leitor:
             dados.append(linha)
+
     return dados
 
 # Função principal
 def main():
-    # Realizar a conexão com o banco de dados
+    # Realizar a conexão com a base de dados
     conn = conectar()
     if not conn:
         return
@@ -135,7 +136,7 @@ def main():
                                       'EscolaRealizadaId': 'fk_EscolaRealizada'}
     inserir_dados(conn, 'RealizacaoExame', dados_realizacoes, mapeamento_colunas_realizacoes)
 
-    # Fechar a conexão com o banco de dados
+    # Fechar a conexão com a base de dados
     conn.close()
 
 if __name__ == '__main__':
