@@ -114,42 +114,43 @@ ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_Aluno
     REFERENCES Aluno (NrAluno, idEscola);
 
 CREATE VIEW vwExamesRealizados AS
-SELECT RE.id AS "Id",
-       RE.fk_aluno AS "Nº de Aluno", 
-       A.Nome AS "Nome", 
-       E.Nome AS "Escola do Aluno",
-       CONCAT(D.Nome, ' -  Fase ', EN.Fase, ' ', EN.Ano) AS "Exame",
-       RE.NotaFinal AS "Nota Final", 
-       RE.NotaRevisada AS "Nota Revisada"
-FROM 
-    RealizacaoExame AS RE JOIN Aluno AS A 
-        ON RE.fk_Aluno=A.NrAluno AND RE.fk_AlunoEscola=A.idEscola
-    JOIN ExameNacional EN 
-        ON RE.fk_ExameNacional=EN.id
-    JOIN Escola E 
-        ON RE.fk_AlunoEscola=E.id
-    JOIN Disciplina D 
-        ON EN.fk_Disciplina=D.id
-GROUP BY E.Nome;
+	SELECT RE.id AS "Id",
+		   RE.fk_aluno AS "Nº de Aluno", 
+		   A.Nome AS "Nome", 
+		   E.Nome AS "Escola do Aluno",
+		   CONCAT(D.Nome, ' -  Fase ', EN.Fase, ' ', EN.Ano) AS "Exame",
+		   RE.NotaFinal AS "Nota Final", 
+		   RE.NotaRevisada AS "Nota Revisada"
+	FROM 
+		RealizacaoExame AS RE JOIN Aluno AS A 
+			ON RE.fk_Aluno=A.NrAluno AND RE.fk_AlunoEscola=A.idEscola
+		JOIN ExameNacional EN 
+			ON RE.fk_ExameNacional=EN.id
+		JOIN Escola E 
+			ON RE.fk_AlunoEscola=E.id
+		JOIN Disciplina D 
+			ON EN.fk_Disciplina=D.id
+	GROUP BY E.Nome;
 
 DELIMITER &&
-CREATE PROCEDURE ExamesDeAlunosDaEscola (Escola VARCHAR(255))
+CREATE PROCEDURE ExamesDeAlunosDaEscola (IN Escola VARCHAR(255))
 BEGIN
-SELECT RE.id AS "Id",
-        RE.fk_aluno AS "Nº de Aluno", 
-        A.Nome AS "Nome", 
-        E.Nome AS "Escola do Aluno", 
-        CONCAT(D.Nome, ' -  Fase ', EN.Fase, ' ', EN.Ano) AS "Exame",
-        RE.NotaFinal AS "Nota Final", 
-        RE.NotaRevisada AS "Nota Revisada"
-FROM
-    RealizacaoExame AS RE JOIN Aluno AS A 
-        ON RE.fk_Aluno=A.NrAluno AND RE.fk_AlunoEscola=A.idEscola
-    JOIN ExameNacional EN 
-        ON RE.fk_ExameNacional=EN.id
-    JOIN Escola E 
-        ON RE.fk_AlunoEscola=E.id
-    JOIN Disciplina D 
-        ON EN.fk_Disciplina=D.id
-WHERE E.Nome = @Escola;
+	SELECT RE.id AS "Id",
+			RE.fk_aluno AS "Nº de Aluno", 
+			A.Nome AS "Nome", 
+			E.Nome AS "Escola do Aluno", 
+			CONCAT(D.Nome, ' -  Fase ', EN.Fase, ' ', EN.Ano) AS "Exame",
+			RE.NotaFinal AS "Nota Final", 
+			RE.NotaRevisada AS "Nota Revisada"
+	FROM
+		RealizacaoExame AS RE JOIN Aluno AS A 
+			ON RE.fk_Aluno=A.NrAluno AND RE.fk_AlunoEscola=A.idEscola
+		JOIN ExameNacional EN 
+			ON RE.fk_ExameNacional=EN.id
+		JOIN Escola E 
+			ON RE.fk_AlunoEscola=E.id
+		JOIN Disciplina D 
+			ON EN.fk_Disciplina=D.id
+	WHERE E.Nome = Escola;
 END &&
+DELIMITER ;
