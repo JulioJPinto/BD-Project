@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS edudata;
 USE edudata;
 
-CREATE TABLE Aluno (
+CREATE TABLE aluno (
     NrAluno INT,
     idEscola INT,
     Nome VARCHAR(255) NOT NULL,
@@ -12,13 +12,13 @@ CREATE TABLE Aluno (
     PRIMARY KEY (NrAluno, idEscola)
 );
 
-CREATE TABLE Curso (
+CREATE TABLE curso (
     id INT PRIMARY KEY,
     Nome VARCHAR(255) NOT NULL,
     Descricao TEXT
 );
 
-CREATE TABLE Escola (
+CREATE TABLE escola (
     id INT PRIMARY KEY,
     Nome VARCHAR(255) NOT NULL,
     Tipo CHAR NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE Escola (
     fk_DiretorEscola INT
 );
 
-CREATE TABLE Concelho (
+CREATE TABLE concelho (
     id INT PRIMARY KEY,
     Nome VARCHAR(255) NOT NULL,
     IdadeMediaPopulacao FLOAT NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE Concelho (
     fk_PresidenteConcelho INT
 );
 
-CREATE TABLE ExameNacional (
+CREATE TABLE examenacional (
     id INT PRIMARY KEY,
     Ano INT NOT NULL,
     Fase CHAR NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE ExameNacional (
     fk_Disciplina INT
 );
 
-CREATE TABLE RealizacaoExame (
+CREATE TABLE realizacaoexame (
     id INT PRIMARY KEY,
     NotaFinal FLOAT,
     NotaRevisada FLOAT,
@@ -57,61 +57,61 @@ CREATE TABLE RealizacaoExame (
     fk_EscolaRealizada INT
 );
 
-CREATE TABLE Disciplina (
+CREATE TABLE disciplina (
     id INT PRIMARY KEY,
     Nome VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE PresidenteConcelho (
+CREATE TABLE presidenteconcelho (
     id INT PRIMARY KEY,
     Nome VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE DiretorEscola (
+CREATE TABLE diretorescola (
     id INT PRIMARY KEY,
     Nome VARCHAR(255) NOT NULL
 );
  
-ALTER TABLE Aluno ADD CONSTRAINT FK_Aluno_Escola
+ALTER TABLE aluno ADD CONSTRAINT FK_Aluno_Escola
     FOREIGN KEY (idEscola)
-    REFERENCES Escola (id)
+    REFERENCES escola (id)
     ON DELETE RESTRICT;
  
-ALTER TABLE Aluno ADD CONSTRAINT FK_Aluno_Curso
+ALTER TABLE aluno ADD CONSTRAINT FK_Aluno_Curso
     FOREIGN KEY (fk_Curso)
-    REFERENCES Curso (id)
+    REFERENCES curso (id)
     ON DELETE RESTRICT;
  
-ALTER TABLE Escola ADD CONSTRAINT FK_Escola_Concelho
+ALTER TABLE escola ADD CONSTRAINT FK_Escola_Concelho
     FOREIGN KEY (fk_Concelho)
-    REFERENCES Concelho (id)
+    REFERENCES concelho (id)
     ON DELETE RESTRICT;
 
-ALTER TABLE Escola ADD CONSTRAINT FK_Escola_DiretorEscola
+ALTER TABLE escola ADD CONSTRAINT FK_Escola_DiretorEscola
     FOREIGN KEY (fk_DiretorEscola)
-    REFERENCES DiretorEscola (id)
+    REFERENCES diretorescola (id)
     ON DELETE RESTRICT;
  
-ALTER TABLE Concelho ADD CONSTRAINT FK_Concelho_PresidenteConcelho
+ALTER TABLE concelho ADD CONSTRAINT FK_Concelho_PresidenteConcelho
     FOREIGN KEY (fk_PresidenteConcelho)
-    REFERENCES PresidenteConcelho (id);
+    REFERENCES presidenteconcelho (id);
  
-ALTER TABLE ExameNacional ADD CONSTRAINT FK_ExameNacional_Disciplina
+ALTER TABLE examenacional ADD CONSTRAINT FK_ExameNacional_Disciplina
     FOREIGN KEY (fk_Disciplina)
-    REFERENCES Disciplina (id)
+    REFERENCES disciplina (id)
     ON DELETE RESTRICT;
  
-ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_EscolaRealizada
+ALTER TABLE realizacaoexame ADD CONSTRAINT FK_RealizacaoExame_EscolaRealizada
     FOREIGN KEY (fk_EscolaRealizada)
-    REFERENCES Escola (id);
+    REFERENCES escola (id);
  
-ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_ExameNacional
+ALTER TABLE realizacaoexame ADD CONSTRAINT FK_RealizacaoExame_ExameNacional
     FOREIGN KEY (fk_ExameNacional)
-    REFERENCES ExameNacional (id);
+    REFERENCES examenacional (id);
  
-ALTER TABLE RealizacaoExame ADD CONSTRAINT FK_RealizacaoExame_Aluno
+ALTER TABLE realizacaoexame ADD CONSTRAINT FK_RealizacaoExame_Aluno
     FOREIGN KEY (fk_Aluno, fk_AlunoEscola)
-    REFERENCES Aluno (NrAluno, idEscola);
+    REFERENCES aluno (NrAluno, idEscola);
 
 CREATE VIEW vwExamesRealizados AS
 	SELECT RE.id AS "Id",
@@ -212,13 +212,14 @@ BEGIN
 			RE.NotaFinal AS "Nota Final", 
 			RE.NotaRevisada AS "Nota Revisada"
 	FROM
-		RealizacaoExame AS RE JOIN Aluno AS A 
+		realizacaoexame RE 
+        JOIN aluno A
 			ON RE.fk_Aluno=A.NrAluno AND RE.fk_AlunoEscola=A.idEscola
-		JOIN ExameNacional EN 
+		JOIN examenacional EN 
 			ON RE.fk_ExameNacional=EN.id
-		JOIN Escola E 
+		JOIN escola E 
 			ON RE.fk_AlunoEscola=E.id
-		JOIN Disciplina D 
+		JOIN disciplina D 
 			ON EN.fk_Disciplina=D.id
 	WHERE E.Nome = Escola
     ORDER BY RE.NotaFinal ASC;
