@@ -13,13 +13,13 @@ CREATE TABLE aluno (
 );
 
 CREATE TABLE curso (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(255) NOT NULL,
     Descricao TEXT
 );
 
 CREATE TABLE escola (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(255) NOT NULL,
     Tipo CHAR NOT NULL,
     IdadeMediaProfessores FLOAT NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE escola (
 );
 
 CREATE TABLE concelho (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(255) NOT NULL,
     IdadeMediaPopulacao FLOAT NOT NULL,
     RendimentoMedioAgregadoFamiliar FLOAT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE concelho (
 );
 
 CREATE TABLE examenacional (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     Ano INT NOT NULL,
     Fase CHAR NOT NULL,
     DataHora DATETIME NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE examenacional (
 );
 
 CREATE TABLE realizacaoexame (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     NotaFinal FLOAT,
     NotaRevisada FLOAT,
     fk_Aluno INT,
@@ -58,17 +58,17 @@ CREATE TABLE realizacaoexame (
 );
 
 CREATE TABLE disciplina (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE presidenteconcelho (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE diretorescola (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     Nome VARCHAR(255) NOT NULL
 );
  
@@ -153,5 +153,73 @@ BEGIN
 		JOIN disciplina D 
 			ON EN.fk_Disciplina=D.id
 	WHERE E.Nome = Escola;
+END &&
+DELIMITER ;
+
+DELIMITER &&
+CREATE PROCEDURE CriarDiretorEscola (IN Nome VARCHAR(255))
+BEGIN
+    INSERT INTO diretorescola (Nome) VALUES (Nome);
+END &&
+DELIMITER ;
+
+DELIMITER &&
+CREATE TRIGGER CriarRoleDiretorEscola
+AFTER INSERT ON diretorescola
+FOR EACH ROW
+BEGIN
+    DECLARE diretor_id INT;
+    DECLARE escola_id INT;
+
+    SET diretor_id = NEW.id;
+    SET escola_id = (SELECT fk_DiretorEscola FROM escola WHERE fk_DiretorEscola = diretor_id);
+
+    IF escola_id IS NOT NULL THEN
+        SET @username = CONCAT('diretor_', NEW.Nome, '@localhost');
+        SET @password = '1234';
+        SET @query = CONCAT('CREATE USER \'', @username, '\'@\'localhost\' IDENTIFIED BY \'', @password, '\'');
+        PREPARE stmt FROM @query;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+
+        SET @grantQuery = CONCAT('GRANT SELECT, UPDATE ON edudata.escola TO \'', @username, '\'@\'localhost\' WHERE fk_DiretorEscola = ', diretor_id);
+        PREPARE grantStmt FROM @grantQuery;
+        EXECUTE grantStmt;
+        DEALLOCATE PREPARE grantStmt;
+    END IF;
+END &&
+DELIMITER ;
+
+DELIMITER &&
+CREATE PROCEDURE CriarPresidenteConcelho (IN Nome VARCHAR(255))
+BEGIN
+    INSERT INTO presidenteconcelho (Nome) VALUES (Nome);
+END &&
+DELIMITER ;
+
+DELIMITER &&
+CREATE TRIGGER CriarRolePresidenteConcelho
+AFTER INSERT ON presidenteconcelho
+FOR EACH ROW
+BEGIN
+    DECLARE presidente_id INT;
+    DECLARE concelho_id INT;
+
+    SET presidente_id = NEW.id;
+    SET concelho_id = (SELECT fk_PresidenteConcelho FROM concelho WHERE fk_PresidenteConcelho = presidente_id);
+
+    IF concelho_id IS NOT NULL THEN
+        SET @username = CONCAT('presidente_', NEW.Nome, '@localhost');
+        SET @password = '1234';
+        SET @query = CONCAT('CREATE USER \'', @username, '\'@\'localhost\' IDENTIFIED BY \'', @password, '\'');
+        PREPARE stmt FROM @query;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+
+        SET @grantQuery = CONCAT('GRANT SELECT, UPDATE ON edudata.concelho TO \'', @username, '\'@\'localhost\' WHERE fk_PresidenteConcelho = ', presidente_id);
+        PREPARE grantStmt FROM @grantQuery;
+        EXECUTE grantStmt;
+        DEALLOCATE PREPARE grantStmt;
+    END IF;
 END &&
 DELIMITER ;
