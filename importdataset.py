@@ -57,7 +57,7 @@ def main():
     dados_presidente = ler_csv('dataset/presidentes.csv')
     mapeamento_colunas_presidente = {'Id': 'id',
                                      'Nome': 'Nome'}
-    inserir_dados(conn, 'PresidenteConcelho', dados_presidente, mapeamento_colunas_presidente)
+    inserir_dados(conn, 'presidenteconcelho', dados_presidente, mapeamento_colunas_presidente)
 
     # Inserir os dados na tabela Concelho
     dados_concelho = ler_csv('dataset/concelhos.csv')
@@ -67,13 +67,13 @@ def main():
                                    'RendimentoMedioAgregadoFamiliar': 'RendimentoMedioAgregadoFamiliar',
                                    'NumeroMedioFilhos': 'NumeroMedioFilhos',
                                    'PresidenteId': 'fk_PresidenteConcelho'}
-    inserir_dados(conn, 'Concelho', dados_concelho, mapeamento_colunas_concelho)
+    inserir_dados(conn, 'concelho', dados_concelho, mapeamento_colunas_concelho)
 
     # Inserir os dados na tabela DiretorEscola
     dados_diretores = ler_csv('dataset/diretores.csv')
     mapeamento_colunas_diretores = {'Id': 'id',
                                     'Nome': 'Nome'}
-    inserir_dados(conn, 'DiretorEscola', dados_diretores, mapeamento_colunas_diretores)
+    inserir_dados(conn, 'diretorescola', dados_diretores, mapeamento_colunas_diretores)
 
     # Inserir os dados na tabela Escola
     dados_escolas = ler_csv('dataset/escolas.csv')
@@ -84,14 +84,14 @@ def main():
                                   'NumeroMedioAlunosPorTurma': 'NumeroMedioAlunosPorTurma',
                                   'ConcelhoId': 'fk_Concelho',
                                   'DiretorId': 'fk_DiretorEscola'}
-    inserir_dados(conn, 'Escola', dados_escolas, mapeamento_colunas_escolas)
+    inserir_dados(conn, 'escola', dados_escolas, mapeamento_colunas_escolas)
 
     # Inserir os dados na tabela Curso
     dados_cursos = ler_csv('dataset/cursos.csv')
     mapeamento_colunas_cursos = {'Id': 'id',
                                  'Nome': 'Nome',
                                  'Descricao': 'Descricao'}
-    inserir_dados(conn, 'Curso', dados_cursos, mapeamento_colunas_cursos)
+    inserir_dados(conn, 'curso', dados_cursos, mapeamento_colunas_cursos)
 
     # Inserir os dados na tabela Aluno
     dados_alunos = ler_csv('dataset/alunos.csv')
@@ -102,13 +102,13 @@ def main():
                                  'Idade': 'Idade',
                                  'DataDeNascimento': 'DataDeNascimento',
                                  'CursoId': 'fk_Curso'}
-    inserir_dados(conn, 'Aluno', dados_alunos, mapeamento_colunas_alunos)
+    inserir_dados(conn, 'aluno', dados_alunos, mapeamento_colunas_alunos)
 
     # Inserir os dados na tabela Disciplina
     dados_disciplinas = ler_csv('dataset/disciplinas.csv')
     mapeamento_colunas_disciplinas = {'Id': 'id',
                                       'Nome': 'Nome'}
-    inserir_dados(conn, 'Disciplina', dados_disciplinas, mapeamento_colunas_disciplinas)
+    inserir_dados(conn, 'disciplina', dados_disciplinas, mapeamento_colunas_disciplinas)
 
     # Inserir os dados na tabela ExameNacional
     dados_exames = ler_csv('dataset/exames.csv')
@@ -119,7 +119,7 @@ def main():
                                  'TempoNecessario': 'TempoNecessario',
                                  'TempoTolerancia': 'TempoTolerancia',
                                  'DisciplinaId': 'fk_Disciplina'}
-    inserir_dados(conn, 'ExameNacional', dados_exames, mapeamento_colunas_exames)
+    inserir_dados(conn, 'examenacional', dados_exames, mapeamento_colunas_exames)
 
     # Inserir os dados na tabela RealizacaoExame
     dados_realizacoes = ler_csv('dataset/realizacoesexames.csv')
@@ -130,7 +130,7 @@ def main():
                                       'EscolaAlunoId': 'fk_AlunoEscola',
                                       'ExameId': 'fk_ExameNacional',
                                       'EscolaRealizadaId': 'fk_EscolaRealizada'}
-    inserir_dados(conn, 'RealizacaoExame', dados_realizacoes, mapeamento_colunas_realizacoes)
+    inserir_dados(conn, 'realizacaoexame', dados_realizacoes, mapeamento_colunas_realizacoes)
 
     # Fechar a conexão com a base de dados
     conn.close()
