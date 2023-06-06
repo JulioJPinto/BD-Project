@@ -204,15 +204,14 @@ DELIMITER &&
 
 CREATE PROCEDURE ExamesDeAlunosDaEscola (IN Escola VARCHAR(255))
 BEGIN
-	SELECT RE.id AS "Id",
+	SELECT  RE.id AS "Id",
 		    RE.fk_aluno AS "Nº de Aluno", 
 			A.Nome AS "Nome", 
 			E.Nome AS "Escola do Aluno", 
 			CONCAT(D.Nome, ' -  Fase ', EN.Fase, ' ', EN.Ano) AS "Exame",
 			RE.NotaFinal AS "Nota Final", 
 			RE.NotaRevisada AS "Nota Revisada"
-	FROM
-		realizacaoexame RE 
+	FROM realizacaoexame RE 
         JOIN aluno A
 			ON RE.fk_Aluno=A.NrAluno AND RE.fk_AlunoEscola=A.idEscola
 		JOIN examenacional EN 
@@ -264,10 +263,6 @@ BEGIN
 	WHERE D.Nome = Disciplina_Nome AND EN.Ano=Ano AND EN.Fase=Fase AND E.Nome = Escola_Nome;
 END &&
 
-CREATE PROCEDURE CriarDiretorEscola (IN Nome VARCHAR(255))
-BEGIN
-    INSERT INTO diretorescola (Nome) VALUES (Nome);
-END &&
 
 CREATE PROCEDURE NotaMédiaExamePorCursoeEscola (IN Disciplina_Nome VARCHAR(255),IN Fase CHAR,IN Ano INT, IN Curso_Nome VARCHAR(255), IN Escola_Nome VARCHAR(255))
 BEGIN
@@ -286,59 +281,5 @@ BEGIN
 	WHERE D.Nome = Disciplina_Nome AND EN.Ano=Ano AND EN.Fase=Fase AND C.Nome = Curso_Nome AND E.Nome = Escola_Nome;
 END &&
 
-CREATE TRIGGER CriarRoleDiretorEscola
-AFTER INSERT ON diretorescola
-FOR EACH ROW
-BEGIN
-    DECLARE diretor_id INT;
-    DECLARE escola_id INT;
-
-    SET diretor_id = NEW.id;
-    SET escola_id = (SELECT fk_DiretorEscola FROM escola WHERE fk_DiretorEscola = diretor_id);
-
-    IF escola_id IS NOT NULL THEN
-        SET @username = CONCAT('diretor_', NEW.Nome, '@localhost');
-        SET @password = '1234';
-        SET @query = CONCAT('CREATE USER \'', @username, '\'@\'localhost\' IDENTIFIED BY \'', @password, '\'');
-        PREPARE stmt FROM @query;
-        EXECUTE stmt;
-        DEALLOCATE PREPARE stmt;
-
-        SET @grantQuery = CONCAT('GRANT SELECT, UPDATE ON edudata.escola TO \'', @username, '\'@\'localhost\' WHERE fk_DiretorEscola = ', diretor_id);
-        PREPARE grantStmt FROM @grantQuery;
-        EXECUTE grantStmt;
-        DEALLOCATE PREPARE grantStmt;
-    END IF;
-END &&
-
-CREATE PROCEDURE CriarPresidenteConcelho (IN Nome VARCHAR(255))
-BEGIN
-    INSERT INTO presidenteconcelho (Nome) VALUES (Nome);
-END &&
-
-CREATE TRIGGER CriarRolePresidenteConcelho
-AFTER INSERT ON presidenteconcelho
-FOR EACH ROW
-BEGIN
-    DECLARE presidente_id INT;
-    DECLARE concelho_id INT;
-
-    SET presidente_id = NEW.id;
-    SET concelho_id = (SELECT fk_PresidenteConcelho FROM concelho WHERE fk_PresidenteConcelho = presidente_id);
-
-    IF concelho_id IS NOT NULL THEN
-        SET @username = CONCAT('presidente_', NEW.Nome, '@localhost');
-        SET @password = '1234';
-        SET @query = CONCAT('CREATE USER \'', @username, '\'@\'localhost\' IDENTIFIED BY \'', @password, '\'');
-        PREPARE stmt FROM @query;
-        EXECUTE stmt;
-        DEALLOCATE PREPARE stmt;
-
-        SET @grantQuery = CONCAT('GRANT SELECT, UPDATE ON edudata.concelho TO \'', @username, '\'@\'localhost\' WHERE fk_PresidenteConcelho = ', presidente_id);
-        PREPARE grantStmt FROM @grantQuery;
-        EXECUTE grantStmt;
-        DEALLOCATE PREPARE grantStmt;
-    END IF;
-END &&
-
 DELIMITER ;
+
