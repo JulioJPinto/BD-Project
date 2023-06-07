@@ -25,7 +25,7 @@ def create_backup(connection_info_lazy):
     database = connection_info['database']
 
     # Comando para criar o backup
-    cmd = f'mysqldump --user={user} --password={password} --host={host} --databases {database} > {backup_file}'
+    cmd = f'mysqldump --user={user} --password={password} --host={host} --databases {database} --routines > {backup_file}'
 
     # Executar o comando
     subprocess.call(cmd, shell=True)
